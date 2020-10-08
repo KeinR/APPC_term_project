@@ -65,6 +65,11 @@ public:
 
     bool keyPressed(int key) const;
 
+    float getMouseX() const;
+    float getMouseY() const;
+    void getMousePos(float &x, float &y) const;
+    void setMousePos(float x, float y);
+
     void setEventCallback(WindowCallback &c);
     void removeEventCallback();
     static void pollEvents();

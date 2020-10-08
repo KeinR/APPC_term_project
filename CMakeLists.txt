@@ -21,6 +21,8 @@ else()
     endif()
 endif()
 
+file(COPY "data" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 file(GLOB_RECURSE sources src/*.cpp extern/*.c)
 
 add_executable(solar ${sources})

@@ -96,6 +96,27 @@ bool Window::keyPressed(int key) const {
     return glfwGetKey(handle, key) == GLFW_PRESS;
 }
 
+float Window::getMouseX() const {
+    double x;
+    glfwGetCursorPos(handle, &x, NULL);
+    return x;
+}
+float Window::getMouseY() const {
+    double y;
+    glfwGetCursorPos(handle, NULL, &y);
+    return y;
+}
+void Window::getMousePos(float &x, float &y) const {
+    double mx, my;
+    glfwGetCursorPos(handle, &mx, &my);
+    x = static_cast<float>(mx);
+    y = static_cast<float>(my);
+}
+
+void Window::setMousePos(float x, float y) {
+    glfwSetCursorPos(handle, x, y);
+}
+
 void Window::setEventCallback(WindowCallback &c) {
     callbacks[handle] = &c;
 }
