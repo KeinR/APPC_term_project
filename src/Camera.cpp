@@ -25,8 +25,9 @@ glm::mat4 Camera::getView() {
     return glm::lookAt(position, position + front, up);
 }
 glm::mat4 Camera::getProj() {
+    constexpr float VIEW_DIST = 1e10;
     // Second param is the viewport width/height
-    return glm::perspective(glm::radians(fov), 1.0f, 0.1f, 1000.0f);
+    return glm::perspective(glm::radians(fov), 1.0f, 0.1f, VIEW_DIST);
 }
 void Camera::processKey(dir key, float deltaTime) {
     float velocity = speed * deltaTime;

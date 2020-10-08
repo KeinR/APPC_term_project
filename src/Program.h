@@ -6,12 +6,14 @@
 #include "ShaderMan.h"
 #include "Context.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 class Program: public WindowCallback {
     Window window;
     ShaderMan shaderMan;
     Context c;
     Camera camera;
+    Mesh sphereMesh;
     float lastMouseX;
     float lastMouseY;
     void processInput(float deltaTime);
