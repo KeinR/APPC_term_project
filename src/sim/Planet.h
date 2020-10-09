@@ -1,14 +1,18 @@
 #ifndef SIM_PLANET_H_INCLUDED
 #define SIM_PLANET_H_INCLUDED
 
+#include <memory>
+
 #include "Body.h"
+#include "../Texture.h"
 
 class Context;
 
 namespace sim {
     class Planet: public Body {
+        std::shared_ptr<Texture> texture;
     public:
-        Planet();
+        Planet(const std::shared_ptr<Texture> &texture);
         void render(Context &c) override;
     };
 }

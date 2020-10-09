@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
 #define DEFAULT_YAW 60.0f
@@ -45,10 +46,11 @@ void Camera::processKey(dir key, float deltaTime) {
             position -= right * velocity;
             break;
         case UP:
-            position += up * velocity;
+            // position += up * velocity;
+            
             break;
         case DOWN:
-            position -= up * velocity;
+            // position -= up * velocity;
             break;
     }
     // TODO: up and down keys
@@ -68,9 +70,9 @@ void Camera::processMouse(float xOffset, float yOffset) {
 }
 
 void Camera::updateVectors() {
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.x = std::cos(glm::radians(yaw)) * std::cos(glm::radians(pitch));
+    front.y = std::sin(glm::radians(pitch));
+    front.z = std::sin(glm::radians(yaw)) * std::cos(glm::radians(pitch));
     front = glm::normalize(front);
 
     // Get directions for up and down so that we can move correctly

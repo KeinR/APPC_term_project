@@ -6,27 +6,38 @@ static constexpr float PI = 3.14159;
 
 Mesh mg::sphere(unsigned int quality) {
     constexpr float radius = 1;
+    constexpr int vertexSize = 8;
 
     // MUST be even and > 0
     const int smoothness = quality - quality % 2;
 
-    const int countVerticies = std::pow(smoothness + 1, 2) * 3;
+    const int countVerticies = std::pow(smoothness + 1, 2) * vertexSize;
     float *verticies = new float[countVerticies];
     int vi = 0;
 
     for (int stack = 0; stack <= smoothness; stack++) {
         float stcAngle = PI / 2 - PI * stack / smoothness;
+        float xy = radius * std::cos(stcAngle);
+        float z = radius * std::sin(stcAngle);
 
         for (int sector = 0; sector <= smoothness; sector++) {
             float secAngle = 2 * PI * sector / smoothness;
 
-            // x, y, z
-            verticies[vi++] = radius * std::cos(stcAngle) * std::cos(secAngle);
-            verticies[vi++] = radius * std::cos(stcAngle) * std::sin(secAngle);
-            verticies[vi++] = radius * std::sin(stcAngle);
-            // if (verticies[vi-1] == 0.0f) {
-            //     std::cout << "ZERO ZERO" << std::endl;
-            // }
+            // x, y, z (position)
+            float x = xy * std::cos(secAngle);
+            float y = xy * std::sin(secAngle);
+            verticies[vi++] = x;
+            verticies[vi++] = y;
+            verticies[vi++] = z;
+            // s, t (texture)
+            verticies[vi++] = static_cast<float>(sector) / smoothness;
+            verticies[vi++] = static_cast<float>(stack) / smoothness;
+            // x, y, z (normals)
+            // Already pointing out of center, just need to normalize
+            // by magnitude
+            verticies[vi++] = x / radius;
+            verticies[vi++] = y / radius;
+            verticies[vi++] = z / radius;
         }
     }
 
@@ -56,7 +67,9 @@ Mesh mg::sphere(unsigned int quality) {
     Mesh mesh;
     mesh.setVertices(countVerticies, verticies);
     mesh.setIndices(countIndices, indices);
-    mesh.setParam(0, 3, 3, 0);
+    mesh.setParam(0, 3, vertexSize, 0); // Position
+    mesh.setParam(1, 2, vertexSize, 3); // Texture
+    mesh.setParam(2, 3, vertexSize, 5); // Normal
 
     delete[] verticies;
     delete[] indices;

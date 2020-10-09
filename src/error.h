@@ -11,6 +11,7 @@ public:
     serror(bool severe = false);
     ~serror();
     static void raise(const std::string &message, bool severe);
+    static const char *glErrStr(int err);
 };
 
 #endif

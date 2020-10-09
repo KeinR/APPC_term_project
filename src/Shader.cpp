@@ -102,13 +102,13 @@ Shader::uniform_t Shader::uni(const std::string &name) {
         GLenum error;
         error = glGetError();
         if (error != GL_NO_ERROR) {
-            serror() << "GL err before getting uniform location: " << error;
+            serror() << "GL err before getting uniform location: " << serror::glErrStr(error);
         }
         location = glGetUniformLocation(handle, name.c_str());
         uniforms[name] = location;
         error = glGetError();
         if (error != GL_NO_ERROR) {
-            serror() << "GL err after call to glGetUniformLocation(this->handle,name): " << error;
+            serror() << "GL err after call to glGetUniformLocation(this->handle,name): " << serror::glErrStr(error);
         }
     } else {
         location = loc->second;

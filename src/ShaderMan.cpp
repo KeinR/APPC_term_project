@@ -16,6 +16,9 @@ ShaderMan::ShaderMan(const std::string &shaderDir):
     program(0),
     body(shaderDir + "/body.vert", shaderDir + "/body.frag")
 {
+    body.use();
+    Shader::setInt1(body.getUniform("tex"), 0);
+    Shader::disuse();
 }
 Shader &ShaderMan::getBody() {
     return body;

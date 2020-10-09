@@ -5,7 +5,7 @@
 #include "../Matrix.h"
 #include "../Context.h"
 
-sim::Planet::Planet() {
+sim::Planet::Planet(const std::shared_ptr<Texture> &texture): texture(texture) {
 }
 void sim::Planet::render(Context &c) {
     glm::vec3 pos = getPosition() * c.getScale();
@@ -15,5 +15,6 @@ void sim::Planet::render(Context &c) {
     // std::cout << "pos.z = " << pos.z << '\n';
     // Matrix matrix(0, 0, 0);
     matrix.load(c);
+    texture->bind();
     c.renderSphere();
 }

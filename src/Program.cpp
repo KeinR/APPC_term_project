@@ -8,10 +8,13 @@
 #include "Mesh.h"
 
 #include "meshgen.h"
+#include "opengl.h"
 
 #include <memory>
 #include "sim/Simulation.h"
 #include "sim/Planet.h"
+
+#include "Texture.h"
 
 Window::params getWindowParams() {
     Window::params p;
@@ -19,6 +22,7 @@ Window::params getWindowParams() {
     p.width = 500;
     p.height = 500;
     p.resizable = false;
+    p.MSAASamples = 4;
     return p;
 }
 
@@ -69,7 +73,7 @@ void Program::run() {
     glActiveTexture(GL_TEXTURE0);
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
     glDisable(GL_CULL_FACE);
     // glEnable(GL_DEPTH_TEST);
@@ -97,8 +101,19 @@ void Program::run() {
 
     sim::Simulation sim;
 
-    std::shared_ptr<sim::Planet> p0 = std::make_shared<sim::Planet>();
-    std::shared_ptr<sim::Planet> p1 = std::make_shared<sim::Planet>();
+    Texture::tparam texParams{
+        GL_REPEAT,
+        GL_REPEAT,
+        GL_LINEAR_MIPMAP_LINEAR,
+        GL_LINEAR
+    };
+
+    std::shared_ptr<Texture> earth = std::make_shared<Texture>(texParams);
+    // std::shared_ptr<Texture> earth = std::make_shared<Texture>();
+    earth->loadImage("earth2048.bmp", false);
+    earth->genMipmap();
+    std::shared_ptr<sim::Planet> p0 = std::make_shared<sim::Planet>(earth);
+    std::shared_ptr<sim::Planet> p1 = std::make_shared<sim::Planet>(earth);
     sim.push(p0);
     glm::vec3 p(1000, 1000, 0);
     glm::vec3 v(-10, 0, 10);

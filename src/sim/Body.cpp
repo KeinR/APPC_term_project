@@ -36,6 +36,7 @@ void sim::Body::run(Simulation &s, float deltaTime) {
     for (Simulation::body_t &b : s) {
         // Don't loop over self
         if (b.get() != this) {
+            // Make sure to point the force in the right direction...
             glm::vec3 direction = glm::normalize(b->getPosition() - position);
 
             // Formula for gravitational force:

@@ -24,6 +24,7 @@ namespace sim {
         float getMass();
         glm::vec3 getPosition();
 
+        // deltaTime in seconds
         void run(Simulation &s, float deltaTime);
         virtual void render(Context &c) = 0;
     };
