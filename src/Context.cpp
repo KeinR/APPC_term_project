@@ -25,7 +25,7 @@ void Context::setSphereMesh(Mesh &m) {
 void Context::setMatrixUniform(int loc) {
     matrixUniform = loc;
 }
-void Context::setScale(float s) {
+void Context::setScale(double s) {
     scale = s;
 }
 void Context::setShaderMan(ShaderMan &man) {
@@ -39,9 +39,9 @@ int Context::getMatrixUniform() const {
     ASSERT(matrixUniform != BAD_UNIFORM);
     return matrixUniform;
 }
-float Context::getScale() const {
+double Context::getScale() const {
     // Not undefined, but still very bad
-    ASSERT(scale > 0.0f);
+    ASSERT(scale > 0.0d);
     return scale;
 }
 ShaderMan &Context::getShaders() const {

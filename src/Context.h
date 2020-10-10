@@ -8,7 +8,7 @@ class Mesh;
 // The mutable context
 class Context {
     int matrixUniform;
-    float scale;
+    double scale;
     ShaderMan *shaderMan;
     Camera *camera;
     Mesh *sphereMesh;
@@ -20,12 +20,12 @@ public:
     void setSphereMesh(Mesh &m);
 
     void setMatrixUniform(int loc);
-    void setScale(float s);
+    void setScale(double s);
     void setShaderMan(ShaderMan &man);
     void setCamera(Camera &cam);
 
     int getMatrixUniform() const;
-    float getScale() const;
+    double getScale() const;
     ShaderMan &getShaders() const;
     Camera &getCamera() const;
 

@@ -11,21 +11,21 @@ namespace sim {
 
 namespace sim {
     class Body {
-        float mass; // kg
-        glm::vec3 position; // m
-        glm::vec3 velocity; // m/s
+        double mass; // kg
+        glm::dvec3 position; // m
+        glm::dvec3 velocity; // m/s
         bool t = false;
     public:
         Body();
-        void setMass(float mass);
-        void setPosition(const glm::vec3 &p);
-        void setVelocity(const glm::vec3 &v);
+        void setMass(double mass);
+        void setPosition(const glm::dvec3 &p);
+        void setVelocity(const glm::dvec3 &v);
 
-        float getMass();
-        glm::vec3 getPosition();
+        double getMass();
+        glm::dvec3 getPosition();
 
         // deltaTime in seconds
-        void run(Simulation &s, float deltaTime);
+        void run(Simulation &s, double deltaTime);
         virtual void render(Context &c) = 0;
     };
 }

@@ -3,6 +3,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <iostream>
+#include <cmath>
+
 #include "opengl.h"
 #include "glfw.h"
 #include "debug.h"
@@ -126,22 +129,49 @@ void Program::run() {
 
     sim::Simulation sim;
 
-    tex_t earth = loadTex("2k_earth_daymap.jpg");
-    planet_t p0 = newPlanet(earth);
-    planet_t p1 = newPlanet(earth);
-    p0->setMass(1e9);
-    sim.push(p0);
-    glm::vec3 p(10, 10, 0);
-    glm::vec3 v(-0.03, 0, 0);
-    p1->setPosition(p);
-    p1->setVelocity(v);
-    sim.push(p1);
+
+    tex_t sunTex = loadTex("2k_sun.jpg");
+    planet_t sun = newPlanet(sunTex);
+    sun->setMass(1.989e30); // Wow that's MASSive
+    sim.push(sun);
+
+    tex_t mercuryTex = loadTex("2k_mercury.jpg");
+    planet_t mercury = newPlanet(mercuryTex);
+    mercury->setMass(0.330e24);
+    mercury->setPosition(glm::dvec3(0, 57.9e9, 0));
+    mercury->setVelocity(glm::dvec3(47.4e3 * std::cos(glm::radians(7.0d)), 0, 47.4e3 * std::sin(glm::radians(7.0d))));
+    sim.push(mercury);
+
+    double f = 0.330e24 * 1.989e30;
+    std::cout << "f = " << f << '\n';
+
+    tex_t venusTex = loadTex("2k_venus_atmosphere.jpg");
+    planet_t venus = newPlanet(venusTex);
+    venus->setMass(4.87e24);
+    venus->setPosition(glm::dvec3(0, 108.2e9, 0));
+    venus->setVelocity(glm::dvec3(35e3 * std::cos(glm::radians(3.4d)), 0, 35e3 * std::sin(glm::radians(3.4d))));
+    sim.push(venus);
+
+    tex_t earthTex = loadTex("2k_earth_daymap.jpg");
+    planet_t earth = newPlanet(earthTex);
+    earth->setMass(5.97e24);
+    earth->setPosition(glm::dvec3(0, 149.6e9, 0));
+    earth->setVelocity(glm::dvec3(29.8e3 * std::cos(0.0d), 0, 29.8e3 * std::sin(0.0d)));
+    sim.push(earth);
+
+    // glm::dvec3 p(10, 10, 0);
+    // glm::dvec3 v(-0.03, 0, 0);
+    // p1->setPosition(p);
+    // p1->setVelocity(v);
+    // sim.push(p1);
+
+    // a dot b = 0
 
     Cubemap skybox;
     skybox.load("data/skybox/skybox");
 
-    // c.setScale(1e-2);
-    c.setScale(1);
+    c.setScale(1e-10);
+    // c.setScale(1);
 
     window.setCursorMode(Window::CURSOR_DISABLED);
     window.getMousePos(lastMouseX, lastMouseY);
@@ -149,7 +179,7 @@ void Program::run() {
 
     float start = glfwGetTime();
 
-    float speed = 12;
+    float speed = 1e5;
 
     while (!window.shouldClose()) {
         glClearColor(0.1, 0.1, 0.1, 1);
