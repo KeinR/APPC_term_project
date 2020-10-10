@@ -45,7 +45,8 @@ void sim::Body::run(Simulation &s, float deltaTime) {
                 std::pow(position.z - b->getPosition().z, 2)
             ;
             // Didn't take square root because it's squared right after
-            
+
+            // Prevent undefined zero-division if they collide
             if (r2 != 0) {
                 // Make sure to point the force in the right direction...
                 glm::vec3 direction = glm::normalize(b->getPosition() - position);

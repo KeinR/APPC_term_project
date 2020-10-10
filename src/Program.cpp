@@ -26,7 +26,7 @@ Window::params getWindowParams() {
     p.width = 500;
     p.height = 500;
     p.resizable = false;
-    p.MSAASamples = 4;
+    p.MSAASamples = 10;
     return p;
 }
 
@@ -43,6 +43,23 @@ Program::Program():
     c.setShaderMan(shaderMan);
     c.setCamera(camera);
     c.setSphereMesh(sphereMesh);
+}
+
+Program::tex_t Program::loadTex(const std::string &name) {
+    Texture::tparam texParams{
+        GL_REPEAT,
+        GL_REPEAT,
+        GL_LINEAR_MIPMAP_LINEAR,
+        GL_LINEAR
+    };
+    std::shared_ptr<Texture> tex = std::make_shared<Texture>(texParams);
+    tex->loadImage("data/textures/" + name, false);
+    tex->genMipmap();
+    return tex;
+}
+
+Program::planet_t Program::newPlanet(const tex_t &texture) {
+    return std::make_shared<sim::Planet>(texture);
 }
 
 void Program::keyPressed(int key, int action, int mods) {
@@ -80,12 +97,11 @@ void Program::processInput(float deltaTime) {
 void Program::run() {
 
     glActiveTexture(GL_TEXTURE0);
-    // glEnable(GL_BLEND);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
 
     glDisable(GL_CULL_FACE);
-    // glEnable(GL_DEPTH_TEST);
 
     // float v[12] = {
     //     -1, -1, 0,
@@ -110,29 +126,19 @@ void Program::run() {
 
     sim::Simulation sim;
 
-    Texture::tparam texParams{
-        GL_REPEAT,
-        GL_REPEAT,
-        GL_LINEAR_MIPMAP_LINEAR,
-        GL_LINEAR
-    };
-
-    std::shared_ptr<Texture> earth = std::make_shared<Texture>(texParams);
-    // std::shared_ptr<Texture> earth = std::make_shared<Texture>();
-    earth->loadImage("earth2048.bmp", false);
-    earth->genMipmap();
-    std::shared_ptr<sim::Planet> p0 = std::make_shared<sim::Planet>(earth);
-    std::shared_ptr<sim::Planet> p1 = std::make_shared<sim::Planet>(earth);
+    tex_t earth = loadTex("2k_earth_daymap.jpg");
+    planet_t p0 = newPlanet(earth);
+    planet_t p1 = newPlanet(earth);
     p0->setMass(1e9);
     sim.push(p0);
     glm::vec3 p(10, 10, 0);
-    // glm::vec3 v(-1, 0, 2);
+    glm::vec3 v(-0.03, 0, 0);
     p1->setPosition(p);
-    // p1->setVelocity(v);
+    p1->setVelocity(v);
     sim.push(p1);
 
     Cubemap skybox;
-    skybox.load("h");
+    skybox.load("data/skybox/skybox");
 
     // c.setScale(1e-2);
     c.setScale(1);
