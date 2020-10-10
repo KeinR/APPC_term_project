@@ -14,6 +14,7 @@ class Program: public WindowCallback {
     Context c;
     Camera camera;
     Mesh sphereMesh;
+    Mesh cubeMesh;
     float lastMouseX;
     float lastMouseY;
     void processInput(float deltaTime);

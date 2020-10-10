@@ -1,6 +1,7 @@
 #include "meshgen.h"
 
 #include <cmath>
+#include <vector>
 
 static constexpr float PI = 3.14159;
 
@@ -15,13 +16,16 @@ Mesh mg::sphere(unsigned int quality) {
     float *verticies = new float[countVerticies];
     int vi = 0;
 
+    float sectorStep = 2 * PI / smoothness;
+    float stackStep = PI / smoothness;
+
     for (int stack = 0; stack <= smoothness; stack++) {
-        float stcAngle = PI / 2 - PI * stack / smoothness;
+        float stcAngle = PI / 2 - stack * stackStep;
         float xy = radius * std::cos(stcAngle);
         float z = radius * std::sin(stcAngle);
 
         for (int sector = 0; sector <= smoothness; sector++) {
-            float secAngle = 2 * PI * sector / smoothness;
+            float secAngle = sector * sectorStep;
 
             // x, y, z (position)
             float x = xy * std::cos(secAngle);
@@ -73,6 +77,64 @@ Mesh mg::sphere(unsigned int quality) {
 
     delete[] verticies;
     delete[] indices;
+
+    return mesh;
+}
+
+Mesh mg::cube() {
+    float vertices[] = {
+        // Front
+        -1, -1, 1,
+        -1, 1, 1,
+        1, 1, 1,
+        1, -1, 1,
+
+        // Back
+        1, -1, -1,
+        1, 1, -1,
+        -1, 1, -1,
+        -1, -1, -1,
+
+        // Right
+        1, -1, 1,
+        1, 1, 1,
+        1, 1, -1,
+        1, -1, -1,
+
+        // Left
+        -1, -1, -1,
+        -1, 1, -1,
+        -1, 1, 1,
+        -1, -1, 1,
+
+        // Top
+        -1, 1, 1,
+        -1, 1, -1,
+        1, 1, -1,
+        1, 1, 1,
+
+        // Bottom
+        1, -1, 1,
+        1, -1, -1,
+        -1, -1, -1,
+        -1, -1, 1
+    };
+
+    std::vector<unsigned int> indices;
+
+    // Loop through faces
+    for (int f = 0; f < 8; f++) {
+        unsigned int ofs = f * 4;
+        indices.insert(indices.end(), {
+            ofs + 0, ofs + 1, ofs + 2,
+            ofs + 0, ofs + 2, ofs + 3
+        });
+    }
+
+    Mesh mesh;
+    mesh.setVertices(sizeof(vertices) / sizeof(float), vertices);
+    mesh.setIndices(indices.size(), indices.data());
+    mesh.setParam(0, 3, 3, 0);
 
     return mesh;
 }

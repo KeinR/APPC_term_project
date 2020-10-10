@@ -7,7 +7,7 @@
 #include "constants.h"
 
 // Initial mass to prevent accidental zero-division
-sim::Body::Body(): mass(5e11), position(0.0f, 0.0f, 0.0f), velocity(0.0f, 0.0f, 0.0f) {
+sim::Body::Body(): mass(5), position(0.0f, 0.0f, 0.0f), velocity(0.0f, 0.0f, 0.0f) {
 }
 void sim::Body::setMass(float m) {
     mass = m;
@@ -36,19 +36,24 @@ void sim::Body::run(Simulation &s, float deltaTime) {
     for (Simulation::body_t &b : s) {
         // Don't loop over self
         if (b.get() != this) {
-            // Make sure to point the force in the right direction...
-            glm::vec3 direction = glm::normalize(b->getPosition() - position);
 
             // Formula for gravitational force:
             // F = (G * m_1 * m_2) / (r^2)
-            const float r = std::sqrt(
+            const float r2 =
                 std::pow(position.x - b->getPosition().x, 2) +
                 std::pow(position.y - b->getPosition().y, 2) +
                 std::pow(position.z - b->getPosition().z, 2)
-            );
-            const float magnitude = (cst::G * b->getMass() * mass) / std::pow(r, 2);
+            ;
+            // Didn't take square root because it's squared right after
+            
+            if (r2 != 0) {
+                // Make sure to point the force in the right direction...
+                glm::vec3 direction = glm::normalize(b->getPosition() - position);
 
-            f += direction * magnitude;
+                const float magnitude = (cst::G * b->getMass() * mass) / r2;
+
+                f += direction * magnitude;
+            }
         }
     }
 

@@ -14,6 +14,7 @@ class Camera {
     float speed; // Camera speed
     float mouseSensitivity;
     float fov; // aka zoom
+    float renderDistance;
 
     void updateVectors();
 public:
@@ -27,6 +28,11 @@ public:
         UP,
         DOWN
     };
+
+    void setSpeed(float v);
+    void setSense(float v);
+    void setFOV(float v);
+    void setRenderDist(float v);
 
     Camera();
     glm::mat4 getView();
