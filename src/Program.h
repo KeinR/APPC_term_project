@@ -28,7 +28,8 @@ class Program: public WindowCallback {
     float lastMouseY;
     void processInput(float deltaTime);
     tex_t loadTex(const std::string &name);
-    planet_t newPlanet(const tex_t &texture);
+    planet_t newPlanet(const tex_t &texture, float scale);
+    void initPlanet(const planet_t &p, double distance, double velocity, double incl);
 public:
     Program();
     void keyPressed(int key, int action, int mods) override;

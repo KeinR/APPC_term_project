@@ -11,8 +11,9 @@ class Context;
 namespace sim {
     class Planet: public Body {
         std::shared_ptr<Texture> texture;
+        float scale;
     public:
-        Planet(const std::shared_ptr<Texture> &texture);
+        Planet(const std::shared_ptr<Texture> &texture, float scale);
         void render(Context &c) override;
     };
 }

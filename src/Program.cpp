@@ -41,7 +41,7 @@ Program::Program():
     cubeMesh = mg::cube();
 
     camera.setRenderDist(1e10);
-    camera.setSpeed(4);
+    camera.setSpeed(40);
 
     c.setShaderMan(shaderMan);
     c.setCamera(camera);
@@ -61,8 +61,13 @@ Program::tex_t Program::loadTex(const std::string &name) {
     return tex;
 }
 
-Program::planet_t Program::newPlanet(const tex_t &texture) {
-    return std::make_shared<sim::Planet>(texture);
+Program::planet_t Program::newPlanet(const tex_t &texture, float scale) {
+    return std::make_shared<sim::Planet>(texture, scale * 0.3);
+}
+
+void Program::initPlanet(const planet_t &p, double distance, double velocity, double incl) {
+    p->setPosition(glm::dvec3(0, distance, 0));
+    p->setVelocity(glm::dvec3(velocity * std::cos(glm::radians(incl)), 0, velocity * std::sin(glm::radians(incl))));
 }
 
 void Program::keyPressed(int key, int action, int mods) {
@@ -131,33 +136,38 @@ void Program::run() {
 
 
     tex_t sunTex = loadTex("2k_sun.jpg");
-    planet_t sun = newPlanet(sunTex);
+    planet_t sun = newPlanet(sunTex, 3);
     sun->setMass(1.989e30); // Wow that's MASSive
     sim.push(sun);
 
     tex_t mercuryTex = loadTex("2k_mercury.jpg");
-    planet_t mercury = newPlanet(mercuryTex);
+    planet_t mercury = newPlanet(mercuryTex, 0.4);
     mercury->setMass(0.330e24);
-    mercury->setPosition(glm::dvec3(0, 57.9e9, 0));
-    mercury->setVelocity(glm::dvec3(47.4e3 * std::cos(glm::radians(7.0d)), 0, 47.4e3 * std::sin(glm::radians(7.0d))));
+    initPlanet(mercury, 57.9e9, 47.4e3, 7.0);
     sim.push(mercury);
 
     double f = 0.330e24 * 1.989e30;
     std::cout << "f = " << f << '\n';
 
     tex_t venusTex = loadTex("2k_venus_atmosphere.jpg");
-    planet_t venus = newPlanet(venusTex);
+    planet_t venus = newPlanet(venusTex, 1);
     venus->setMass(4.87e24);
-    venus->setPosition(glm::dvec3(0, 108.2e9, 0));
-    venus->setVelocity(glm::dvec3(35e3 * std::cos(glm::radians(3.4d)), 0, 35e3 * std::sin(glm::radians(3.4d))));
+    initPlanet(venus, 108.2e9, 35e3, 3.4);
     sim.push(venus);
 
     tex_t earthTex = loadTex("2k_earth_daymap.jpg");
-    planet_t earth = newPlanet(earthTex);
+    planet_t earth = newPlanet(earthTex, 1);
     earth->setMass(5.97e24);
-    earth->setPosition(glm::dvec3(0, 149.6e9, 0));
-    earth->setVelocity(glm::dvec3(29.8e3 * std::cos(0.0d), 0, 29.8e3 * std::sin(0.0d)));
+    initPlanet(earth, 149.6e9, 29.8e3, 0.0);
     sim.push(earth);
+
+    // tex_t moonTex = loadTex("2k_moon.jpg");
+    // planet_t moon = newPlanet(moonTex, 0.3);
+    // moon->setMass(0.073e24);
+    // initPlanet(moon, 5.384e9 + 149.6e9, 1.0e3 + 29.8e3, 0.0);
+    // sim.push(moon);
+
+    // std::cout << (moon->getPosition() - earth->getPosition()).y << '\n';
 
     // glm::dvec3 p(10, 10, 0);
     // glm::dvec3 v(-0.03, 0, 0);
@@ -180,6 +190,9 @@ void Program::run() {
     float start = glfwGetTime();
 
     float speed = 1e5;
+    float iterations = 1e2;
+    // float speed = 1;
+    // float iterations = 1;
 
     while (!window.shouldClose()) {
         glClearColor(0.1, 0.1, 0.1, 1);
@@ -207,7 +220,9 @@ void Program::run() {
         window.pollEvents();
 
         processInput(glfwGetTime() - start);
-        sim.run((glfwGetTime() - start) * speed);
+        for (int i = 0; i < iterations; i++) {
+            sim.run((glfwGetTime() - start) * speed);
+        }
         start = glfwGetTime();
 
         ASSERT_GL("main loop");
